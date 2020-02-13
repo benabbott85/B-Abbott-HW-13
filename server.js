@@ -1,8 +1,12 @@
 const express = require("express");
-const mongojs = require("mongojs");
+const mongoose= require("mongoose");
 const logger = require("morgan");
 
+
+const PORT = 3000;
 const app = express();
+
+
 
 app.use(logger("dev"));
 
@@ -11,93 +15,14 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-const databaseUrl = "";
-const collections = [""];
-
-const db = mongojs(databaseUrl, collections);
-
-db.on("error", error => {
-  console.log("Database Error:", error);
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", {
+  useNewUrlParser: true,
+  useFindAndModify: false
 });
 
-// 1. Save a note to the database's collection
-// POST: /submit
-// ===========================================
-app.post("/submit", (req, res) =>{
-    db.notes.insert(req.body, (err, note) => {
-      if (err){
-        return res.status(500).end();
-      }
-  
-      res.json(note);
-    })
-  })
-  
-  // 2. Retrieve all notes from the database's collection
-  // GET: /all
-  // ====================================================
-  app.get("/all", (req,res) => {
-    db.notes.find({}, (err, notes) => {
-      if (err){
-        throw err;
-      }
-  
-      res.json(notes)
-    })
-  })
-  // 3. Retrieve one note in the database's collection by it's ObjectId
-  // TIP: when searching by an id, the id needs to be passed in
-  // as (mongojs.ObjectId(IdYouWantToFind))
-  // GET: /find/:id
-  // ==================================================================
-    app.get("/find/:id", (req, res) =>{
-      db.notes.findOne({_id: mongojs.ObjectId(req.params.id)}, (err, note)=> {
-        if (err){
-          return res.status(500).end();
-        }
-  
-        res.json(note)
-      })
-    })
-  // 4. Update one note in the database's collection by it's ObjectId
-  // (remember, mongojs.ObjectId(IdYouWantToFind)
-  // POST: /update/:id
-  // ================================================================
-  app.post("/update/:id", (req, res)=> {
-    db.notes.update({ _id: mongojs.ObjectId(req.params.id)}, {$set: req.body}, (err, notes) => {
-      if (err) {
-        return res.status(500).end();
-      }
-  
-      res.json(notes)
-    })
-  })
-  // 5. Delete one note from the database's collection by it's ObjectId
-  // (remember, mongojs.ObjectId(IdYouWantToFind)
-  // DELETE: /delete/:id
-  // ==================================================================
-  app.delete("/delete/:id", (req, res)=> {
-    db.notes.remove({ _id: mongojs.ObjectId(req.params.id)}, (err, notes) =>{
-      if (err){
-        return res.status(500).end();
-      }
-  
-      res.json(notes)
-    })
-  })
-  // 6. Clear the entire note collection
-  // DELETE: /clearall
-  // ===================================
-  app.delete("/clearall", (req, res) => {
-    db.notes.remove({}, (err, notes) =>{
-      if (err) {
-        return res.status(500).end()
-      }
-      res.json(notes)
-    })
-  })
-  // Listen on port 3000
-  app.listen(3000, () => {
-    console.log("App running on port 3000!");
-  });
-  
+app.use(require("./routes/api.js"));
+app.use(require("./routes/view.js"));
+
+app.listen (PORT, ()=> {
+    console.log(`App running on port ${PORT}`)
+})
