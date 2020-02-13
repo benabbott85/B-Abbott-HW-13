@@ -1,0 +1,26 @@
+{
+  "name": "b-abbott-hw-13",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongojs": "^3.1.0",
+    "morgan": "^1.9.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benabbott85/B-Abbott-HW-13.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/benabbott85/B-Abbott-HW-13/issues"
+  },
+  "homepage": "https://github.com/benabbott85/B-Abbott-HW-13#readme"
+}
